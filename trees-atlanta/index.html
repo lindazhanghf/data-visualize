@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Trees Atlanta</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript" src="small_data.js"></script>
+    <script>
+
+    var image = {
+          url: './tree_icon.png'
+          // url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+          // // This marker is 20 pixels wide by 32 pixels high.
+          // size: new google.maps.Size(20, 32),
+          // // The origin for this image is (0, 0).
+          // origin: new google.maps.Point(0, 0),
+          // // The anchor for this image is the base of the flagpole at (0, 32).
+          // anchor: new google.maps.Point(0, 32)
+        };
+
+      function initMap() {
+        // var myLatLng = {lat: 33.756, lng: -84.388}; //data[0]
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center:  {lat: 33.756, lng: -84.388}
+        });
+
+        // var marker = new google.maps.Marker({
+        //   position: myLatLng,
+        //   map: map,
+        //   title: 'Hello World!'
+        // });
+
+        data.forEach(function(item) {
+            // var marker = new google.maps.Marker({
+            //   position: {lat: item[3], lng: item[4]},
+            //     map: map,
+            //     icon: image,
+            //     title: item[0]
+            // });
+          var cityCircle = new google.maps.Circle({
+            strokeColor: '000000',
+            strokeOpacity: 0.5,
+            strokeWeight: 1,
+            fillColor: 'hsl(120, 100%, 50%)',
+            fillOpacity: 1,
+            map: map,
+            center: {lat: item[3], lng: item[4]},
+            radius: 10 // radius: Math.sqrt(citymap[city].population) * 100
+          });
+        });
+
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAV9aJY17nWo5XRGbRAYGp-Zsx84d6GDfQ&callback=initMap">
+    </script>
+  </body>
+</html>
