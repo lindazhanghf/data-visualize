@@ -35,10 +35,20 @@
         };
 
       function initMap() {
+        var colors = [300, 0, 30, 60, 75, 120, 180, 240]; // Hue of rainbow
+        var color_year = {};
+        colors.forEach(function(hue, index) {
+          color_year[index + 2004] = 'hsl(' + colors[index] + ', 100%, 50%)';
+        });
+        color_year[2009] = 'hsl(120, 100%, 40%)';
+        color_year[2012] = 'hsl(240, 100%, 50%)';
+        color_year[2013] = 'hsl(0, 0%, 40%)';
+        color_year[2014] = 'hsl(0, 0%, 0%)';
+
         // var myLatLng = {lat: 33.756, lng: -84.388};
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 13,
-          center:  {lat: 33.756, lng: -84.388},
+          center:  {lat: 33.756, lng: -84.388}, // ATL downtown
           styles: 
           // [
           //   {
@@ -312,16 +322,15 @@
         });
 
         // Data fields: Genus,Species,Cultivarname,Latitude,Longitude,Year
-
         data.forEach(function(item) {
-          if (item[5] != 2004)
+          if (item[5] < 2013)
             return;
           var cityCircle = new google.maps.Circle({
             title: item[5],
             strokeColor: '000000',
             strokeOpacity: 0,
             strokeWeight: 1,
-            fillColor: 'hsl(120, 100%, 30%)',
+            fillColor: color_year[item[5]],
             fillOpacity: 1,
             map: map,
             center: {lat: item[3], lng: item[4]},
