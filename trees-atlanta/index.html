@@ -35,25 +35,40 @@
         };
 
       function initMap() {
-        // var myLatLng = {lat: 33.756, lng: -84.388}; //data[0]
+        // var myLatLng = {lat: 33.756, lng: -84.388};
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
-          center:  {lat: 33.756, lng: -84.388}
+          zoom: 14,
+          center:  {lat: 33.756, lng: -84.388},
+          styles: [
+            // {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+            // {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+            {
+              featureType: 'administrative.land_parcel',
+              stylers: [{visibility: 'off'}]
+            },
+            {
+              featureType: 'poi',
+              stylers: [{visibility: 'off'}]
+            },
+            {
+              featureType: 'poi.park',
+              stylers: [{visibility: 'on'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'labels',
+              stylers: [{visibility: 'off'}]
+            },
+            {
+              featureType: 'transit.station',
+              elementType: 'labels.text.fill',
+              stylers: [{visibility: 'off'}]
+            }
+          ]
         });
 
-        // var marker = new google.maps.Marker({
-        //   position: myLatLng,
-        //   map: map,
-        //   title: 'Hello World!'
-        // });
 
         data.forEach(function(item) {
-            // var marker = new google.maps.Marker({
-            //   position: {lat: item[3], lng: item[4]},
-            //     map: map,
-            //     icon: image,
-            //     title: item[0]
-            // });
           var cityCircle = new google.maps.Circle({
             strokeColor: '000000',
             strokeOpacity: 0.5,
