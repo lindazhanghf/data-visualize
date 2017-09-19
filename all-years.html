@@ -367,8 +367,8 @@
 
         // Data fields: Genus,Species,Cultivarname,Latitude,Longitude,Year
         data.forEach(function(item) {
-          if (item[5] != 2012)
-            return;
+          // if (item[5] != 2012)
+          //   return;
           if (item[5] < 2005)
             return;
           if (item[4] < lng_range[1] || item[4] > lng_range[0])
