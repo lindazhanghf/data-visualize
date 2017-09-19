@@ -16,40 +16,54 @@
         margin: 0;
         padding: 0;
       }
+      #legend {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        margin: 10px;
+        border: 3px solid #000;
+      }
+      #legend h3 {
+        margin-top: 0;
+      }
+      #legend img {
+        vertical-align: middle;
+      }      
     </style>
   </head>
   <body>
     <div id="map"></div>
+    <div id="legend"><h3>Legend</h3></div>    
     <script type="text/javascript" src="./trees-atlanta/data.js"></script>
     <script>
 
-    var image = {
-          url: './tree_icon.png'
-          // url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
-          // // This marker is 20 pixels wide by 32 pixels high.
-          // size: new google.maps.Size(20, 32),
-          // // The origin for this image is (0, 0).
-          // origin: new google.maps.Point(0, 0),
-          // // The anchor for this image is the base of the flagpole at (0, 32).
-          // anchor: new google.maps.Point(0, 32)
-        };
+    // var image = {
+    //       url: './tree_icon.png'
+    //     };
+      var iconBase = './trees-atlanta/legends/';
+      var icons = {};
+      for (var i = 2005; i <= 2014; i++) {
+        icons[i] = {
+          name: i.toString(),
+          icon: iconBase + i.toString() + '.png'
+        }
+      }
 
       function initMap() {
-        var colors = [300, 0, 30, 60, 75, 120, 180, 240]; // Hue of rainbow
+        var colors = [300, 0, 30, 60, 120, 180, 210]; // Hue of rainbow
         var color_year = {};
         colors.forEach(function(hue, index) {
-          color_year[index + 2004] = 'hsl(' + colors[index] + ', 100%, 50%)';
+          color_year[index + 2005] = 'hsl(' + colors[index] + ', 100%, 50%)';
         });
-        color_year[2009] = 'hsl(75, 100%, 40%)';
-        color_year[2010] = 'hsl(120, 100%, 40%)';
-        color_year[2013] = 'hsl(240, 100%, 50%)';
+        // color_year[2009] = 'hsl(75, 100%, 40%)';
+        color_year[2009] = 'hsl(120, 100%, 40%)';
+        color_year[2012] = 'hsl(255, 100%, 60%)';
+        color_year[2013] = 'hsl(255, 100%, 25%)';
         color_year[2014] = 'hsl(0, 0%, 40%)';
-        // color_year[2014] = 'hsl(0, 0%, 0%)';
 
-        // var myLatLng = {lat: 33.756, lng: -84.388};
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
-          center:  {lat: 33.756, lng: -84.388}, // ATL downtown
+          zoom: 14, //lat: 33.7575995, lng: -84.3685305
+          center:  {lat: 33.76, lng: -84.38}, // ATL downtown
           styles: 
           // [
           //   {
@@ -322,10 +336,44 @@
           ]          
         });
 
+        var lat_range = [33.75, 33.79];
+        var lng_range = [-84.35, -84.375]
+        // var range_coordinates = [
+        //   {lat: lat_range[0], lng: lng_range[1]}, //lower left
+        //   {lat: lat_range[0], lng: lng_range[0]}, // lower right
+        //   {lat: lat_range[1], lng: lng_range[0]}, // upper right
+        //   {lat: lat_range[1], lng: lng_range[1]}, // upper left
+        //   {lat: lat_range[0], lng: lng_range[1]}
+        // ];
+        // var range = new google.maps.Polyline({
+        //   path: range_coordinates,
+        //   geodesic: true,
+        //   strokeColor: '#ff0000',
+        //   strokeOpacity: 1.0,
+        //   strokeWeight: 2
+        // });
+        // range.setMap(map);
+
+
+        var trailPath = new google.maps.Polyline({
+          path: trail_coordinates,
+          geodesic: true,
+          strokeColor: '#000000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        trailPath.setMap(map);
+
         // Data fields: Genus,Species,Cultivarname,Latitude,Longitude,Year
         data.forEach(function(item) {
-          if (item[5] != 2005)
-          // if (item[5] < 2005)
+          if (item[5] != 2012)
+            return;
+          if (item[5] < 2005)
+            return;
+          if (item[4] < lng_range[1] || item[4] > lng_range[0])
+            return;
+          if (item[3] < lat_range[0] || item[3] > lat_range[1])
             return;
           var cityCircle = new google.maps.Circle({
             title: item[5],
@@ -339,6 +387,17 @@
             radius: 20 // radius: Math.sqrt(citymap[city].population) * 100
           });
         });
+
+        var legend = document.getElementById('legend');
+        for (var key in icons) {
+          var type = icons[key];
+          var name = type.name;
+          var icon = type.icon;
+          var div = document.createElement('div');
+          div.innerHTML = '<img src="' + icon + '"> ' + name;
+          legend.appendChild(div);
+        }
+        map.controls[google.maps.ControlPosition.RIGHT].push(legend);        
 
       }
     </script>
