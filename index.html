@@ -28,14 +28,15 @@
       }
       #legend img {
         vertical-align: middle;
-      }      
+      }
     </style>
   </head>
   <body>
     <div id="map"></div>
-    <div id="legend"><h3>Legend</h3></div>    
+    <div id="legend"><h3>Legend</h3></div>
     <script type="text/javascript" src="./trees-atlanta/data.js"></script>
     <script>
+      var tree_count = 0;
 
     // var image = {
     //       url: './tree_icon.png'
@@ -64,31 +65,7 @@
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 14, //lat: 33.7575995, lng: -84.3685305
           center:  {lat: 33.76, lng: -84.38}, // ATL downtown
-          styles: 
-          // [
-          //   {
-          //     featureType: 'administrative.land_parcel',
-          //     stylers: [{visibility: 'off'}]
-          //   },
-          //   {
-          //     featureType: 'poi',
-          //     stylers: [{visibility: 'off'}]
-          //   },
-          //   {
-          //     featureType: 'poi.park',
-          //     stylers: [{visibility: 'on'}]
-          //   },
-          //   {
-          //     featureType: 'road',
-          //     elementType: 'labels',
-          //     stylers: [{visibility: 'off'}]
-          //   },
-          //   {
-          //     featureType: 'transit.station',
-          //     elementType: 'labels.text.fill',
-          //     stylers: [{visibility: 'off'}]
-          //   }
-          // ]
+          styles:
           [
             {
               "elementType": "geometry",
@@ -333,30 +310,18 @@
                 }
               ]
             }
-          ]          
+          ]
         });
 
-        var lat_range = [33.75, 33.79];
-        var lng_range = [-84.35, -84.375]
-        // var range_coordinates = [
-        //   {lat: lat_range[0], lng: lng_range[1]}, //lower left
-        //   {lat: lat_range[0], lng: lng_range[0]}, // lower right
-        //   {lat: lat_range[1], lng: lng_range[0]}, // upper right
-        //   {lat: lat_range[1], lng: lng_range[1]}, // upper left
-        //   {lat: lat_range[0], lng: lng_range[1]}
-        // ];
-        // var range = new google.maps.Polyline({
-        //   path: range_coordinates,
-        //   geodesic: true,
-        //   strokeColor: '#ff0000',
-        //   strokeOpacity: 1.0,
-        //   strokeWeight: 2
-        // });
-        // range.setMap(map);
+        // Upper left: 33.747772, -84.441989 -> 33.756568
+        // PREV lower right: 33.731985, -84.420583
 
+        // New lower right: {lat: 33.725469, lng: -84.413542} //Near Adair park
+        var lat_range = [33.72, 33.76];
+        var lng_range = [-84.41, -84.445]
 
         var trailPath = new google.maps.Polyline({
-          path: trail_coordinates,
+          path: east_trail,
           geodesic: true,
           strokeColor: '#000000',
           strokeOpacity: 1.0,
@@ -367,14 +332,16 @@
 
         // Data fields: Genus,Species,Cultivarname,Latitude,Longitude,Year
         data.forEach(function(item) {
-          if (item[5] != 2012)
-            return;
+          // if (item[5] != 2012)
+          //   return;
           if (item[5] < 2005)
             return;
           if (item[4] < lng_range[1] || item[4] > lng_range[0])
             return;
           if (item[3] < lat_range[0] || item[3] > lat_range[1])
             return;
+          tree_count++;
+
           var cityCircle = new google.maps.Circle({
             title: item[5],
             strokeColor: '000000',
@@ -397,9 +364,11 @@
           div.innerHTML = '<img src="' + icon + '"> ' + name;
           legend.appendChild(div);
         }
-        map.controls[google.maps.ControlPosition.RIGHT].push(legend);        
+        map.controls[google.maps.ControlPosition.RIGHT].push(legend);
 
       }
+
+      console.log("Tree count: " + tree_count);
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAV9aJY17nWo5XRGbRAYGp-Zsx84d6GDfQ&callback=initMap">
