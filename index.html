@@ -36,8 +36,6 @@
     <div id="legend"><h3>Legend</h3></div>
     <script type="text/javascript" src="./trees-atlanta/data.js"></script>
     <script>
-      var tree_count = 0;
-
     // var image = {
     //       url: './tree_icon.png'
     //     };
@@ -51,12 +49,13 @@
       }
 
       function initMap() {
+        var tree_count = {};
+
         var colors = [300, 0, 30, 60, 120, 180, 210]; // Hue of rainbow
         var color_year = {};
         colors.forEach(function(hue, index) {
           color_year[index + 2005] = 'hsl(' + colors[index] + ', 100%, 50%)';
         });
-        // color_year[2009] = 'hsl(75, 100%, 40%)';
         color_year[2009] = 'hsl(120, 100%, 40%)';
         color_year[2012] = 'hsl(255, 100%, 70%)';
         color_year[2013] = 'hsl(255, 100%, 25%)';
@@ -320,34 +319,48 @@
         var lat_range = [33.72, 33.76];
         var lng_range = [-84.41, -84.445]
 
-        var trailPath = new google.maps.Polyline({
-          path: east_trail,
+        var trailPath1 = new google.maps.Polyline({
+          path: east_trail1,
           geodesic: true,
           strokeColor: '#000000',
           strokeOpacity: 1.0,
           strokeWeight: 2
         });
 
-        trailPath.setMap(map);
+        var trailPath2 = new google.maps.Polyline({
+          path: east_trail2,
+          geodesic: true,
+          strokeColor: '#000000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        trailPath1.setMap(map);
+        trailPath2.setMap(map);
 
         // Data fields: Genus,Species,Cultivarname,Latitude,Longitude,Year
         data.forEach(function(item) {
-          // if (item[5] != 2012)
+          year = item[5];
+          // if (year != 2008)
           //   return;
-          if (item[5] < 2005)
+          if (year < 2005)
             return;
           if (item[4] < lng_range[1] || item[4] > lng_range[0])
             return;
           if (item[3] < lat_range[0] || item[3] > lat_range[1])
             return;
-          tree_count++;
+
+          if (tree_count[year] == null)
+            tree_count[year] = 1;
+          else
+            tree_count[year]++;
 
           var cityCircle = new google.maps.Circle({
-            title: item[5],
+            title: year,
             strokeColor: '000000',
             strokeOpacity: 0,
             strokeWeight: 1,
-            fillColor: color_year[item[5]],
+            fillColor: color_year[year],
             fillOpacity: 1,
             map: map,
             center: {lat: item[3], lng: item[4]},
@@ -366,9 +379,14 @@
         }
         map.controls[google.maps.ControlPosition.RIGHT].push(legend);
 
+        var sum = 0;
+        for (var year = 2005; year <= 2014; year++) {
+          if (tree_count[year] != null)
+            sum += tree_count[year];
+            console.log(year + ": " + tree_count[year] + "\taccumulate: " + sum);
+        }
       }
 
-      console.log("Tree count: " + tree_count);
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAV9aJY17nWo5XRGbRAYGp-Zsx84d6GDfQ&callback=initMap">
