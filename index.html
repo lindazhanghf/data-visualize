@@ -56,6 +56,7 @@
         colors.forEach(function(hue, index) {
           color_year[index + 2005] = 'hsl(' + colors[index] + ', 100%, 50%)';
         });
+        color_year[2004] = 'hsl(300, 100%, 90%)';
         color_year[2009] = 'hsl(120, 100%, 40%)';
         color_year[2012] = 'hsl(255, 100%, 70%)';
         color_year[2013] = 'hsl(255, 100%, 25%)';
@@ -344,7 +345,7 @@
           // if (year != 2008)
           //   return;
           if (year < 2005)
-            return;
+            year = 2004;
           if (item[4] < lng_range[1] || item[4] > lng_range[0])
             return;
           if (item[3] < lat_range[0] || item[3] > lat_range[1])
@@ -379,7 +380,8 @@
         }
         map.controls[google.maps.ControlPosition.RIGHT].push(legend);
 
-        var sum = 0;
+        var sum = tree_count[2004];
+        console.log("Before 2005: " + sum);
         for (var year = 2005; year <= 2014; year++) {
           if (tree_count[year] != null)
             sum += tree_count[year];
