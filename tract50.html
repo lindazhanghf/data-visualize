@@ -49,6 +49,7 @@
       }
 
       function initMap() {
+        var tree_by_species = {};
         var tree_count = {};
 
         var colors = [300, 0, 30, 60, 120, 180, 210]; // Hue of rainbow
@@ -312,43 +313,41 @@
           ]
         });
 
-        // Upper left: 33.747772, -84.441989 -> 33.756568
-        // PREV lower right: 33.731985, -84.420583
+        var lat_range1 = [33.741640, 33.746775];
+        var lng_range1 = [-84.358134, -84.373342]
+        var lat_range2 = [33.736548, 33.741555];
+        var lng_range2 = [-84.358338, -84.369770]
 
-        // New lower right: {lat: 33.725469, lng: -84.413542} //Near Adair park
-        var lat_range = [33.72, 33.76];
-        var lng_range = [-84.41, -84.445]
-
-        var trailPath1 = new google.maps.Polyline({
-          path: east_trail1,
+        var censusTract = new google.maps.Polyline({
+          path: censusTract50,
           geodesic: true,
           strokeColor: '#000000',
           strokeOpacity: 1.0,
           strokeWeight: 2
         });
 
-        var trailPath2 = new google.maps.Polyline({
-          path: east_trail2,
-          geodesic: true,
-          strokeColor: '#000000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-
-        trailPath1.setMap(map);
-        trailPath2.setMap(map);
+        censusTract.setMap(map);
 
         // Data fields: Genus,Species,Cultivarname,Latitude,Longitude,Year
         data.forEach(function(item) {
           year = item[5];
-          // if (year != 2008)
-          //   return;
-          if (year < 2005)
-            year = 2004;
-          if (item[4] < lng_range[1] || item[4] > lng_range[0])
-            return;
-          if (item[3] < lat_range[0] || item[3] > lat_range[1])
-            return;
+          species = item[0]
+
+          if (year < 2010)
+            return
+
+          flag = false;
+          if (item[4] > lng_range1[1] && item[4] < lng_range1[0] && item[3] > lat_range1[0] && item[3] < lat_range1[1])
+            flag = true;
+          if (item[4] > lng_range2[1] && item[4] < lng_range2[0] && item[3] > lat_range2[0] && item[3] < lat_range2[1])
+            flag = true;
+
+          if (flag == false) return;
+
+          if (tree_by_species[species] == null)
+            tree_by_species[species] = 1;
+          else
+            tree_by_species[species]++;
 
           if (tree_count[year] == null)
             tree_count[year] = 1;
@@ -379,13 +378,21 @@
         }
         map.controls[google.maps.ControlPosition.RIGHT].push(legend);
 
-        var sum = tree_count[2004];
+        var sum = 0;
+        for (species in tree_by_species) {
+            console.log(species + ": " + tree_by_species[species])
+            sum += tree_by_species[species]
+        }
+        console.log("Sum: " + sum);
+
+        var sum = 0;
         console.log("Before 2005: " + sum);
-        for (var year = 2005; year <= 2014; year++) {
+        for (var year = 2004; year <= 2014; year++) {
           if (tree_count[year] != null)
             sum += tree_count[year];
             console.log(year + ": " + tree_count[year] + "\taccumulate: " + sum);
         }
+
       }
 
     </script>
